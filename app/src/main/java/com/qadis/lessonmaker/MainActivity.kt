@@ -19,8 +19,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LessonMakerTheme {
+
                 }
             }
         }
     }
-}
