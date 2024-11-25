@@ -1,5 +1,6 @@
 package com.qadis.lessonmaker
 
+import LoginScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 
 @Preview(showSystemUi = true)
 @Composable
@@ -77,18 +82,18 @@ fun SplashScreen() {
 
 
 @Composable
-fun Delay()
-{
-    val showSplashScreen = remember { true }
-    LaunchedEffect(showSplashScreen) {
-        delay(300)
+fun SplashWithDelay() {
+    var showSplashScreen = remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        delay(2000) // 2-second delay
+        showSplashScreen.value = false
     }
-    if(showSplashScreen)
-    {
+
+    // Conditional rendering
+    if (showSplashScreen.value) {
         SplashScreen()
-    }
-    else
-    {
+    } else {
         LoginScreen()
     }
 }
