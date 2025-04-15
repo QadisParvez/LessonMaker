@@ -45,6 +45,10 @@ class StudentDashboard : AppCompatActivity() {
         val finalID = "S$lastPart"
         val sessionID = 5
 
+        val UserID=Intent(this@StudentDashboard, StudentNotes::class.java)
+        intent.putExtra("userIDFinal",UserID)
+        startActivity(UserID)
+
 
 
         RetrofitClient.instance.getEnrolledCourses(finalID, sessionID)
