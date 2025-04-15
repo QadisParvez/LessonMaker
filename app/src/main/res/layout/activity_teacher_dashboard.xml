@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TeacherDashboard">
+
+    <!-- Top Green Header -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/biitGreen"
+        app:shapeAppearanceOverlay="@style/BottomRoundedCard" />
+
+    <ImageButton
+        android:id="@+id/menuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/sideNavbar"
+        android:src="@drawable/menuicon"
+        app:layout_constraintEnd_toStartOf="@+id/textcourses"
+        app:layout_constraintHorizontal_bias="0.19"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardLayout" />
+
+    <TextView
+        android:id="@+id/textcourses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/jost_medium"
+        android:text="@string/my_courses"
+        android:textColor="@color/biitGreen"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardLayout" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/SubjectListItem"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/biitGreen"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textcourses">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/CurrentCourses"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:listitem="@layout/teacher_dashboard_components" />
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/txtViewRecentCourses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/jost_medium"
+        android:text="@string/recently_added_courses"
+        android:textColor="@color/biitGreen"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/SubjectListItem" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/recentCoursesCard"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/biitGreen"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/txtViewRecentCourses"
+        app:layout_constraintStart_toStartOf="@+id/txtViewRecentCourses"
+        app:layout_constraintTop_toBottomOf="@id/txtViewRecentCourses">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecentCourses"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            tools:listitem="@layout/teacher_recenet_courses" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Create New Button -->
+
+    <!-- Bottom Footer -->
+
+    <Button
+        android:id="@+id/openEditor"
+        android:layout_width="170dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="@color/biitGreen"
+        android:fontFamily="@font/jost_medium"
+        android:text="@string/create_new"
+        android:textSize="19.2sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/bottomFooter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomFooter"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:backgroundTint="@color/biitGreen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/topRoundedCorners" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/biit_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/biit_logo"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LessonMaker"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".StudentSideDrawer"
+            android:exported="false"
+            android:label="@string/title_activity_student_side_drawer"
+            android:theme="@style/Theme.LessonMaker.NoActionBar" />
+        <activity
+            android:name=".ShowNotesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StudentNotes"
+            android:exported="false" />
+        <activity
+            android:name=".TeacherDashboard"
+            android:exported="false" />
+        <activity
+            android:name=".StudentDashboard"
+            android:exported="false" />
+        <activity
+            android:name=".SaveDialog"
+            android:exported="false" />
+        <activity
+            android:name=".InsertLink"
+            android:exported="false" />
+        <activity
+            android:name=".EditorScreen"
+            android:exported="false" />
+        <activity
+            android:name=".LoginPage"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

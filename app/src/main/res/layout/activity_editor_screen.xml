@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditorScreen"
+    android:background="@color/darkGray">
+
+<!--  Back button Bar-->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/biitGreen"
+        app:shapeAppearanceOverlay="@style/BottomRoundedCard">
+
+        <ImageView
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:contentDescription="@string/back_arrow"
+            android:src="@drawable/baseline_arrow_back_ios_new_24" />
+    </com.google.android.material.card.MaterialCardView>
+<!--    back button bar end-->
+<!--    action bar -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ActioncardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="7dp"
+        android:backgroundTint="@color/gray"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <HorizontalScrollView
+                android:id="@+id/actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="horizontal"
+                android:layout_gravity="center_vertical"
+                tools:ignore="UselessParent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/boldBtn"
+                        android:contentDescription="@string/bold_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_bold_24"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/italicbtn"
+                        android:contentDescription="@string/italic_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_italic_24"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/underLineBtn"
+                        android:contentDescription="@string/underline_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_underlined_24"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/headingbtn1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/heading_icon"
+                        android:src="@drawable/h1" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/headingbtn2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/heading_icon"
+                        android:src="@drawable/h2" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/AddKeyword"
+                        android:contentDescription="@string/keyword_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/keyword_icon"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/leftAlign"
+                        android:contentDescription="@string/left_align"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_align_left_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/centerAlign"
+                        android:contentDescription="@string/center_align"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_align_center_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/rightAlign"
+                        android:contentDescription="@string/right_align"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_align_right_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/bulletPoints"
+                        android:contentDescription="@string/bullet_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_format_list_bulleted_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/insertImage"
+                        android:contentDescription="@string/image_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_image_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/insertVideo"
+                        android:contentDescription="@string/video_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/video_icon"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/insertLink"
+                        android:contentDescription="@string/link_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_add_link_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/insertCode"
+                        android:contentDescription="@string/code_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_code_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/undo"
+                        android:contentDescription="@string/undo_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_undo_24"/>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/redo"
+                        android:contentDescription="@string/undo_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_redo_24"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+<!--    action bar end-->
+<!--    main content screen-->
+<!--    main content screen end-->
+<!--    Save Button-->
+    <jp.wasabeef.richeditor.RichEditor
+        android:id="@+id/editor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="140dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+
+        android:id="@+id/SaveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/biitGreen"
+        android:drawablePadding="8dp"
+        android:text="@string/save"
+        android:fontFamily="@font/jost_medium"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.949"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottomGreen"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/biitGreen"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SaveBtn"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

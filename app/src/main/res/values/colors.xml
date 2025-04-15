@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="biitGreen">#0F9E41</color>
+    <color name="gray">#E7E6E6</color>
+    <color name="active_button_color">#A0A0A0</color>
+    <color name="default_button_color">#E7E6E6</color>
+    <color name="darkGray">#C8C8C8</color>
+</resources>
