@@ -67,7 +67,8 @@
             app:layout_constraintBottom_toTopOf="@+id/bottomFooter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topHeaderBar" />
+            app:layout_constraintTop_toBottomOf="@+id/topHeaderBar"
+            android:paddingBottom="30dp"/>
 
 
     <com.google.android.material.card.MaterialCardView

@@ -1,8 +1,10 @@
 package com.qadis.lessonmaker.api
 
+import com.qadis.lessonmaker.Model.CurrentCourses
 import com.qadis.lessonmaker.Model.RecentCourses
 import com.qadis.lessonmaker.Model.Subject
 import com.qadis.lessonmaker.Model.Teacher
+import com.qadis.lessonmaker.Model.WeekNo
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -33,7 +35,12 @@ interface ApiService {
     @GET("Courses/GetCurrentCourses")
     fun getCurrentCourses(
         @Query("id") teacherID:String
-    ):Call<List<String>>
+    ):Call<List<CurrentCourses>>
+
+    @GET("Lesson/SearchByCourseCode")
+    fun getWeeksByCC(
+        @Query("courseCode") courseCode:String
+    ):Call<List<WeekNo>>
 
 
 

@@ -21,8 +21,6 @@ class LoginPage : AppCompatActivity() {
         val bind = ActivityLoginPageBinding.inflate(layoutInflater)
         setContentView(bind.root)
         bind.btnLogin.elevation = 10f
-
-
         bind.btnLogin.setOnClickListener {
             val userID = bind.username.text.toString().trim()
             val password = bind.password.text.toString().trim()

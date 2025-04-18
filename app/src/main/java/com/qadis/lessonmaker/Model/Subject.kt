@@ -6,3 +6,4 @@ data class Subject(
     @SerializedName("title") val subjectName: String?,
     @SerializedName("name") val teacherName: String?
 )
+

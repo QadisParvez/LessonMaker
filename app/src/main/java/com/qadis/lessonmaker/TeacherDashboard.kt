@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qadis.lessonmaker.Adapters.TeacherAdapter
 import com.qadis.lessonmaker.Adapters.TeacherAdapterRecent
+import com.qadis.lessonmaker.Model.CurrentCourses
 import com.qadis.lessonmaker.Model.Teacher
 import com.qadis.lessonmaker.api.RetrofitClient
 import com.qadis.lessonmaker.databinding.ActivityTeacherDashboardBinding
@@ -82,28 +83,33 @@ class TeacherDashboard : AppCompatActivity() {
     }
 
     fun getCurrentCourses(adapter: TeacherAdapter, currentCourseList: MutableList<Teacher>) {
-        RetrofitClient.instance.getCurrentCourses("BIIT124").enqueue(object : Callback<List<String>> {
-            override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
+        val call = RetrofitClient.instance.getCurrentCourses("T124")
+
+        Log.d("API_DEBUG", "Calling URL: ${call.request()}")
+
+        call.enqueue(object : Callback<List<CurrentCourses>> {
+            override fun onResponse(
+                call: Call<List<CurrentCourses>>,
+                response: Response<List<CurrentCourses>>
+            ) {
                 if (response.isSuccessful) {
                     val courses = response.body() ?: emptyList()
                     Log.d("API_RESPONSE", "Current Courses: $courses")
+
                     currentCourseList.clear()
-                    for (currentCourse in courses) {
-                        currentCourseList.add(Teacher(currentCourse))
+                    for (course in courses) {
+                        currentCourseList.add(Teacher(course.subjectName))
                     }
                     adapter.notifyDataSetChanged()
                 } else {
-                    Log.e("API_ERROR", "RESPONSE UNSUCCESSFUL")
+                    Log.e("API_ERROR", "RESPONSE UNSUCCESSFUL - Code: ${response.code()}")
+                    Log.e("API_ERROR", "Error Body: ${response.errorBody()?.string()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<String>>, t: Throwable) {
+            override fun onFailure(call: Call<List<CurrentCourses>>, t: Throwable) {
                 Log.e("API_ERROR", "Failed to fetch current courses", t)
             }
         })
     }
-
-
-
 }
-

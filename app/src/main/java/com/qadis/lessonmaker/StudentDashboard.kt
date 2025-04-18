@@ -1,5 +1,6 @@
 package com.qadis.lessonmaker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,15 +28,19 @@ class StudentDashboard : AppCompatActivity() {
         enableEdgeToEdge()
         val binding = ActivityStudentDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        recyclerView = findViewById(R.id.studentDashboardListItem)
+
+        recyclerView = binding.studentDashboardListItem
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        subjectAdapter = SubjectAdapter(subjectsList) { subject ->
-            openNotesActivity(subject)
+        subjectAdapter = SubjectAdapter(
+            subjectsList){
+            subject->val intent= Intent(this@StudentDashboard, StudentNotes::class.java)
+            startActivity(intent)
         }
         recyclerView.adapter = subjectAdapter
 
         fetchSubjects()
+
 
     }
 
@@ -43,26 +48,24 @@ class StudentDashboard : AppCompatActivity() {
         val receiveUserID = intent.getStringExtra("UserID") ?: ""
         val lastPart = receiveUserID.substringAfterLast("-")
         val finalID = "S$lastPart"
+        Log.d("Received UserID:", finalID)
         val sessionID = 5
-
-        val UserID=Intent(this@StudentDashboard, StudentNotes::class.java)
-        intent.putExtra("userIDFinal",UserID)
-        startActivity(UserID)
-
-
 
         RetrofitClient.instance.getEnrolledCourses(finalID, sessionID)
             .enqueue(object : Callback<List<Subject>> {
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(
                     call: Call<List<Subject>>,
-                    response: Response<List<Subject>>
+                    response: Response<List<Subject>>,
                 ) {
                     if (response.isSuccessful) {
                         val subjects = response.body() ?: emptyList()
-
                         Log.d("API_RESPONSE", "Received Subjects List Size: ${subjects.size}")
                         for (subject in subjects) {
-                            Log.d("API_SUBJECT", "Subject Name: ${subject.subjectName}, Teacher Name: ${subject.teacherName}")
+                            Log.d(
+                                "API_SUBJECT",
+                                "Subject Name: ${subject.subjectName}, Teacher Name: ${subject.teacherName}"
+                            )
                         }
 
                         subjectsList.clear()
@@ -71,7 +74,10 @@ class StudentDashboard : AppCompatActivity() {
 
                     } else {
                         val errorBody = response.errorBody()?.string()
-                        Log.e("API_ERROR", "Response failed - Code: ${response.code()}, Error: $errorBody")
+                        Log.e(
+                            "API_ERROR",
+                            "Response failed - Code: ${response.code()}, Error: $errorBody"
+                        )
                         Toast.makeText(
                             this@StudentDashboard,
                             "Failed to load subjects",
@@ -89,12 +95,5 @@ class StudentDashboard : AppCompatActivity() {
                     ).show()
                 }
             })
-    }
-
-
-    private fun openNotesActivity(subject: Subject) {
-        val intent = Intent(this, StudentNotes::class.java)
-        intent.putExtra("subjectName", subject.subjectName)
-        startActivity(intent)
     }
 }
