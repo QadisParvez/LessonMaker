@@ -21,8 +21,6 @@ class MainActivity : AppCompatActivity() {
             finish()
         },3000)
 
-        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-        val isLoggedIn = sharedPref.getBoolean("isLoggedIn", false)
 
 
 

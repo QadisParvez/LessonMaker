@@ -6,7 +6,9 @@
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:ignore="SelectedPhotoAccess" />
 
     <application
         android:allowBackup="true"
@@ -20,10 +22,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".StudentSideDrawer"
-            android:exported="false"
-            android:label="@string/title_activity_student_side_drawer"
-            android:theme="@style/Theme.LessonMaker.NoActionBar" />
+            android:name=".DownloadedNotes"
+            android:exported="false" />
+        <activity
+            android:name=".Model.StudentNavBar"
+            android:exported="false" />
         <activity
             android:name=".ShowNotesActivity"
             android:exported="false" />

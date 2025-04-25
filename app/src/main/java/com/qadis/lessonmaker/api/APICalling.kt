@@ -16,6 +16,12 @@ data class UserResponse(
     val studentId: String?
 )
 
+data class LessonContentResponse(
+    val content: String,
+    val weekNumber: Int
+)
+
+
 interface ApiService {
     @GET("Users/GetUsers/")
     fun getUser(
@@ -41,6 +47,12 @@ interface ApiService {
     fun getWeeksByCC(
         @Query("courseCode") courseCode:String
     ):Call<List<WeekNo>>
+
+    @GET("Pages/GetContentByLessonID")
+    fun getContentByLessonID(
+        @Query("LessonID") lessonID: Int
+    ): Call<LessonContentResponse>
+
 
 
 

@@ -52,4 +52,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="open_notes">OPEN NOTES</string>
+    <string name="downloaded_notes">Downloaded Notes</string>
+    <string name="requests">Requests</string>
 </resources>

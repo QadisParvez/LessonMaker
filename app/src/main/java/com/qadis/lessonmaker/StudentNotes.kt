@@ -36,14 +36,15 @@ class StudentNotes : AppCompatActivity() {
         }
 
         adapter = StudentNotesAdapter(weekList) { selectedWeek ->
-            Toast.makeText(this, "Opening Notes For ${selectedWeek.weekNumber}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Opening Notes For Week ${selectedWeek.weekNumber}", Toast.LENGTH_SHORT).show()
+
             val intent = Intent(this, ShowNotesActivity::class.java)
-            intent.putExtra("week_no", selectedWeek.weekNumber)
+            intent.putExtra("lessonId", selectedWeek.id)
+            Log.d("LessonId to be sent",selectedWeek.id.toString())
             startActivity(intent)
         }
 
         recyclerView.adapter = adapter
-
         loadWeeksFromApi("CSC-101")
     }
 

@@ -72,6 +72,7 @@ private fun loginUser(activity: AppCompatActivity, userId: String, password: Str
                         }
 
                         intent?.putExtra("UserID", userId)
+                        intent?.putExtra("UserName", loginResponse.name)
                         intent?.let { activity.startActivity(it) }
 
                     } else {

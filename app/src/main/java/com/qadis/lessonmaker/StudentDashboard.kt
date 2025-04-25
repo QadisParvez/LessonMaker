@@ -23,11 +23,16 @@ class StudentDashboard : AppCompatActivity() {
     private val subjectsList = mutableListOf<Subject>()
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val binding = ActivityStudentDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val userName = intent.getStringExtra("UserName") ?: "Unknown"
+        binding.nameSem.text = "Welcome $userName"
+
 
         recyclerView = binding.studentDashboardListItem
         recyclerView.layoutManager = LinearLayoutManager(this)
