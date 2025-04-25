@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qadis.lessonmaker.Adapters.SubjectAdapter
+import com.qadis.lessonmaker.StudentNavBar
 import com.qadis.lessonmaker.Model.Subject
 import com.qadis.lessonmaker.api.RetrofitClient
 import com.qadis.lessonmaker.databinding.ActivityStudentDashboardBinding
@@ -30,23 +31,31 @@ class StudentDashboard : AppCompatActivity() {
         val binding = ActivityStudentDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.SideNavigation.setOnClickListener {
+            val intent = Intent(this@StudentDashboard, StudentNavBar::class.java)
+            startActivity(intent)
+        }
+
+        binding.Logout.setOnClickListener {
+            startActivity(Intent(this, LoginPage::class.java))
+            finish()
+        }
+
         val userName = intent.getStringExtra("UserName") ?: "Unknown"
         binding.nameSem.text = "Welcome $userName"
-
 
         recyclerView = binding.studentDashboardListItem
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         subjectAdapter = SubjectAdapter(
-            subjectsList){
-            subject->val intent= Intent(this@StudentDashboard, StudentNotes::class.java)
+            subjectsList) { subject ->
+            val intent = Intent(this@StudentDashboard, StudentNotes::class.java)
+            intent.putExtra("SubjectName", subject.subjectName)
             startActivity(intent)
         }
         recyclerView.adapter = subjectAdapter
 
         fetchSubjects()
-
-
     }
 
     private fun fetchSubjects() {

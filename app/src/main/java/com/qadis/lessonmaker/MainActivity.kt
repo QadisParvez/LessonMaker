@@ -16,13 +16,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(bind.root)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val switchToLogin = Intent(this@MainActivity, LoginPage::class.java)
-            startActivity(switchToLogin)
+            val intent = Intent(this, LoginPage::class.java)
+            startActivity(intent)
             finish()
-        },3000)
-
-
-
-
+        }, 3000)
     }
 }

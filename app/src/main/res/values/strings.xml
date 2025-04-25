@@ -54,4 +54,6 @@
     <string name="open_notes">OPEN NOTES</string>
     <string name="downloaded_notes">Downloaded Notes</string>
     <string name="requests">Requests</string>
+    <string name="share">Share</string>
+    <string name="view">View</string>
 </resources>

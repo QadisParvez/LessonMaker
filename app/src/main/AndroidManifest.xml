@@ -25,7 +25,7 @@
             android:name=".DownloadedNotes"
             android:exported="false" />
         <activity
-            android:name=".Model.StudentNavBar"
+            android:name=".StudentNavBar"
             android:exported="false" />
         <activity
             android:name=".ShowNotesActivity"

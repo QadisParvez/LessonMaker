@@ -1,6 +1,7 @@
 package com.qadis.lessonmaker
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -21,72 +22,62 @@ class LoginPage : AppCompatActivity() {
         val bind = ActivityLoginPageBinding.inflate(layoutInflater)
         setContentView(bind.root)
         bind.btnLogin.elevation = 10f
+
         bind.btnLogin.setOnClickListener {
             val userID = bind.username.text.toString().trim()
             val password = bind.password.text.toString().trim()
 
             if (userID.isNotEmpty() && password.isNotEmpty()) {
-                loginUser(this@LoginPage, userID, password)
+                loginUser(userID, password)
             } else {
-                Toast.makeText(
-                    this@LoginPage,
-                    "Enter All Required Fields To Login",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Enter All Required Fields To Login", Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 
-}
+    private fun loginUser(userId: String, password: String) {
+        val trimmedUserId = userId.trim()
+        val trimmedPassword = password.trim()
 
+        RetrofitClient.instance.getUser(trimmedUserId, trimmedPassword)
+            .enqueue(object : Callback<UserResponse> {
+                override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val loginResponse = response.body()!!
 
-private fun loginUser(activity: AppCompatActivity, userId: String, password: String) {
-    val trimmedUserId = userId.trim()
-    val trimmedPassword = password.trim()
+                        if (loginResponse.success) {
+                            val roleMessage = when (loginResponse.role) {
+                                3 -> "Logged in as Student"
+                                2 -> "Logged in as Teacher"
+                                else -> "Unknown user type"
+                            }
 
-    println("🔍 Debug: Sending Request - ID: $trimmedUserId, Password: $trimmedPassword")
+                            Toast.makeText(this@LoginPage, roleMessage, Toast.LENGTH_SHORT).show()
 
-    RetrofitClient.instance.getUser(trimmedUserId, trimmedPassword)
-        .enqueue(object : Callback<UserResponse> {
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                println("✅ Response Code: ${response.code()}")
+                            val intent = when (loginResponse.role) {
+                                3 -> Intent(this@LoginPage, StudentDashboard::class.java)
+                                2 -> Intent(this@LoginPage, TeacherDashboard::class.java)
+                                else -> null
+                            }
 
-                if (response.isSuccessful && response.body() != null) {
-                    val loginResponse = response.body()!!
-                    println("✅ Full API Response: $loginResponse")
+                            intent?.putExtra("UserID", userId)
+                            intent?.putExtra("UserName", loginResponse.name)
+                            intent?.let {
+                                startActivity(it)
+                                finish()
+                            }
 
-                    if (loginResponse.success) {
-                        val roleMessage = when (loginResponse.role) {
-                            3 -> "Logged in as Student"
-                            2 -> "Logged in as Teacher"
-                            else -> "Unknown user type"
+                        } else {
+                            Toast.makeText(this@LoginPage, "Invalid Credentials", Toast.LENGTH_SHORT).show()
                         }
-
-                        Toast.makeText(activity, roleMessage, Toast.LENGTH_SHORT).show()
-
-                        val intent = when (loginResponse.role) {
-                            3 -> Intent(activity, StudentDashboard::class.java)
-                            2 -> Intent(activity, TeacherDashboard::class.java)
-                            else -> null
-                        }
-
-                        intent?.putExtra("UserID", userId)
-                        intent?.putExtra("UserName", loginResponse.name)
-                        intent?.let { activity.startActivity(it) }
-
                     } else {
-                        Toast.makeText(activity, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginPage, "Login failed! Try again.", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    println("🚨 Backend returned error: ${response.errorBody()?.string()}")
-                    Toast.makeText(activity, "Login failed! Try again.", Toast.LENGTH_SHORT).show()
                 }
-            }
 
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                println("🚨 Network Error: ${t.message}")
-                Toast.makeText(activity, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    Toast.makeText(this@LoginPage, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
 }
