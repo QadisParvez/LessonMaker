@@ -53,7 +53,8 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="open_notes">OPEN NOTES</string>
     <string name="downloaded_notes">Downloaded Notes</string>
-    <string name="requests">Requests</string>
+    <string name="requests">Request</string>
     <string name="share">Share</string>
     <string name="view">View</string>
+    <string name="backbutton">backButton</string>
 </resources>

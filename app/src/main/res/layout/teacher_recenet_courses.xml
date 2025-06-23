@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="vertical"
     android:fadeScrollbars="true"
-    android:layout_marginStart="8dp">
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,48 +27,50 @@
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:contentDescription="@string/foldericon"
                         android:id="@+id/folderIcon"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginStart="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/outline_folder_copy_128"/>
+                        android:layout_marginLeft="32dp"
+                        android:contentDescription="@string/foldericon"
+                        android:src="@drawable/outline_folder_copy_128"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/subjectNames"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/subject_name"
                         android:layout_marginBottom="13dp"
+                        android:fontFamily="@font/jost_extra_bold"
+                        android:text="@string/subject_name"
+                        android:textColor="@color/biitGreen"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/biitGreen"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintHorizontal_bias="0.040"
+                        app:layout_constraintHorizontal_bias="0.047"
                         app:layout_constraintLeft_toRightOf="@+id/folderIcon"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.507"
-                        android:fontFamily="@font/jost_extra_bold"/>
+                        app:layout_constraintVertical_bias="0.437" />
 
                     <Button
 
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="55dp"
-                        android:autoSizeMaxTextSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginStart="80dp"
+                        android:layout_marginEnd="10dp"
+                        android:autoSizeMaxTextSize="15sp"
                         android:autoSizeMinTextSize="8sp"
                         android:autoSizeStepGranularity="1sp"
                         android:autoSizeTextType="uniform"
                         android:backgroundTint="@color/biitGreen"
                         android:padding="0dp"
-                        android:text="@string/open"
+                        android:text="@string/requests"
                         android:textAlignment="center"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
+                        android:textSize="15sp"
                         app:layout_constraintHorizontal_bias="0.943"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"

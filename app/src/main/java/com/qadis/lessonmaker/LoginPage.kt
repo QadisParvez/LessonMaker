@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -28,20 +29,23 @@ class LoginPage : AppCompatActivity() {
             val password = bind.password.text.toString().trim()
 
             if (userID.isNotEmpty() && password.isNotEmpty()) {
-                loginUser(userID, password)
+                bind.progressBar.visibility = View.VISIBLE
+                loginUser(userID, password, bind)
             } else {
                 Toast.makeText(this, "Enter All Required Fields To Login", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun loginUser(userId: String, password: String) {
+    private fun loginUser(userId: String, password: String, bind: ActivityLoginPageBinding) {
         val trimmedUserId = userId.trim()
         val trimmedPassword = password.trim()
 
         RetrofitClient.instance.getUser(trimmedUserId, trimmedPassword)
             .enqueue(object : Callback<UserResponse> {
                 override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                    bind.progressBar.visibility = View.GONE // ❌ Hide spinner
+
                     if (response.isSuccessful && response.body() != null) {
                         val loginResponse = response.body()!!
 
@@ -76,6 +80,7 @@ class LoginPage : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    bind.progressBar.visibility = View.GONE
                     Toast.makeText(this@LoginPage, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })

@@ -52,6 +52,13 @@ class TeacherDashboard : AppCompatActivity() {
             startActivity(openEditor)
         }
 
+        teacherDashboard.Logout.setOnClickListener {
+            val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            sharedPref.edit().clear().apply()
+            startActivity(Intent(this, LoginPage::class.java))
+            finish()
+        }
+
 
     }
 

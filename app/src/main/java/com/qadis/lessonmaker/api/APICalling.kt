@@ -1,9 +1,7 @@
 package com.qadis.lessonmaker.api
 
 import com.qadis.lessonmaker.Model.CurrentCourses
-import com.qadis.lessonmaker.Model.RecentCourses
 import com.qadis.lessonmaker.Model.Subject
-import com.qadis.lessonmaker.Model.Teacher
 import com.qadis.lessonmaker.Model.WeekNo
 import retrofit2.Call
 import retrofit2.http.GET
@@ -17,8 +15,8 @@ data class UserResponse(
 )
 
 data class LessonContentResponse(
-    val content: String,
-    val weekNumber: Int
+    val Content: String,
+    val WeekNumber: Int
 )
 
 
@@ -29,11 +27,12 @@ interface ApiService {
         @Query("password") password: String
     ): Call<UserResponse>
 
-    @GET("Enrollment/ViewEnrolledCourses")
+    @GET("Enrollment/getEnrolledCourses")
     fun getEnrolledCourses(
         @Query("stdID") studentId: String,
         @Query("sessionID") sessionId: Int
     ): Call<List<Subject>>
+
 
     @GET("Courses/GetCourses")
     fun getAllCourses():Call<List<String>>
@@ -45,13 +44,23 @@ interface ApiService {
 
     @GET("Lesson/SearchByCourseCode")
     fun getWeeksByCC(
-        @Query("courseCode") courseCode:String
-    ):Call<List<WeekNo>>
+        @Query("courseCode") courseCode: String
+    ): Call<List<WeekNo>>
+
 
     @GET("Pages/GetContentByLessonID")
     fun getContentByLessonID(
         @Query("LessonID") lessonID: Int
     ): Call<LessonContentResponse>
+
+    @GET("Pages/GetWeeksByCourseCodeAndKeyword")
+    fun getWeeksByCourseCodeAndKeyword(
+        @Query("courseCode") courseCode: String,
+        @Query("keyword") keyword: String
+    ): Call<List<WeekNo>>
+
+
+
 
 
 
