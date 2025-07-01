@@ -22,6 +22,9 @@ class EditorScreen : AppCompatActivity() {
 
     private lateinit var editor: RichEditor
     private lateinit var bind: ActivityEditorScreenBinding
+    private val selectedKeywords = mutableListOf<String>()
+
+
     private val sqlServerHtmlContent = """
     <h1>Microsoft SQL Server</h1>
     <h2>Introduction to SQL Server</h2>
@@ -71,33 +74,18 @@ class EditorScreen : AppCompatActivity() {
 
         val imagePickCode = 1002
 
-        bind.boldBtn.setOnClickListener {
-            editor.setBold()
-        }
-        bind.italicbtn.setOnClickListener {
-            editor.setItalic()
-        }
-        bind.underLineBtn.setOnClickListener {
-            editor.setUnderline()
-        }
-        bind.headingbtn2.setOnClickListener {
-            editor.setHeading(2)
-        }
-        bind.headingbtn1.setOnClickListener {
-            editor.setHeading(1)
-        }
-        bind.leftAlign.setOnClickListener {
-            editor.setAlignLeft()
-        }
-        bind.rightAlign.setOnClickListener {
-            editor.setAlignRight()
-        }
-        bind.centerAlign.setOnClickListener {
-            editor.setAlignCenter()
-        }
-        bind.bulletPoints.setOnClickListener {
-            editor.setBullets()
-        }
+        bind.boldBtn.setOnClickListener { editor.setBold() }
+        bind.italicbtn.setOnClickListener { editor.setItalic() }
+        bind.underLineBtn.setOnClickListener { editor.setUnderline() }
+        bind.headingbtn1.setOnClickListener { editor.setHeading(1) }
+        bind.headingbtn2.setOnClickListener { editor.setHeading(2) }
+        bind.leftAlign.setOnClickListener { editor.setAlignLeft() }
+        bind.centerAlign.setOnClickListener { editor.setAlignCenter() }
+        bind.rightAlign.setOnClickListener { editor.setAlignRight() }
+        bind.bulletPoints.setOnClickListener { editor.setBullets() }
+        bind.undo.setOnClickListener { editor.undo() }
+        bind.redo.setOnClickListener { editor.redo() }
+
         bind.insertImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
@@ -105,25 +93,13 @@ class EditorScreen : AppCompatActivity() {
             startActivityForResult(intent, imagePickCode)
         }
 
+        bind.insertLink.setOnClickListener { showLinkDialog() }
+        bind.AddKeyword.setOnClickListener { highlightSelectedText() }
+        bind.SaveBtn.setOnClickListener { openSaveDialog() }
+    }
 
-        bind.insertVideo.setOnClickListener {
-        }
-        bind.insertLink.setOnClickListener {
-            showLinkDialog()
-        }
-        bind.undo.setOnClickListener {
-            editor.undo()
-        }
-        bind.redo.setOnClickListener {
-            editor.redo()
-        }
-        bind.AddKeyword.setOnClickListener {
-            highlightSelectedText()
-        }
-        bind.SaveBtn.setOnClickListener {
-            saveDialog()
-        }
-
+    private fun loadSqlServerLesson() {
+        editor.html = sqlServerHtmlContent
     }
 
     private fun showLinkDialog() {
@@ -150,6 +126,39 @@ class EditorScreen : AppCompatActivity() {
         }
     }
 
+    private fun highlightSelectedText() {
+        val jsCode = """
+        (function() {
+            var selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                var range = selection.getRangeAt(0);
+                var selectedText = range.toString();
+                var span = document.createElement("span");
+                span.style.color = "red";
+                span.setAttribute("data-keyword", selectedText);
+                range.surroundContents(span);
+                return selectedText;
+            }
+            return "";
+        })();
+    """.trimIndent()
+
+        bind.editor.evaluateJavascript(jsCode) { result ->
+            val keyword = result.trim('"')
+            if (keyword.isNotEmpty()) {
+                selectedKeywords.add(keyword)
+            }
+        }
+    }
+
+
+    private fun openSaveDialog() {
+        val intent = Intent(this, SaveDialog::class.java)
+        intent.putExtra("htmlContent", editor.html)
+        intent.putStringArrayListExtra("keywords", ArrayList(selectedKeywords))
+        startActivity(intent)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -169,9 +178,7 @@ class EditorScreen : AppCompatActivity() {
                     outputStream.close()
 
                     val resizedImageUri = FileProvider.getUriForFile(
-                        this,
-                        "$packageName.fileprovider",
-                        file
+                        this, "$packageName.fileprovider", file
                     )
 
                     editor.insertImage(resizedImageUri.toString(), "Resized Image")
@@ -183,51 +190,4 @@ class EditorScreen : AppCompatActivity() {
             }
         }
     }
-
-
-
-    private fun loadSqlServerLesson() {
-        editor.html = sqlServerHtmlContent
-    }
-
-
-    private fun saveDialog() {
-        val builder = AlertDialog.Builder(this@EditorScreen)
-        val inflate = layoutInflater
-        val dialogView = inflate.inflate(R.layout.activity_save_dialog, null)
-        builder.setView(dialogView)
-
-
-        val edTxtCrs = dialogView.findViewById<EditText>(R.id.edTextCrs)
-        val edTxtWeek = dialogView.findViewById<EditText>(R.id.edTextWeekNo)
-        val saveBtn = dialogView.findViewById<Button>(R.id.SaveDialogBtn)
-
-        val dialog = builder.create()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
-
-        saveBtn.setOnClickListener {
-            val crs = edTxtCrs.text.toString().trim()
-            val week = edTxtWeek.text.toString().trim()
-        }
-
-    }
-
-    private fun highlightSelectedText() {
-        val jsCode = """
-        var selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-            var range = selection.getRangeAt(0);
-            var span = document.createElement("span");
-            span.style.color = "red";  // ✅ Text Color
-            range.surroundContents(span);
-        }
-    """.trimIndent()
-        bind.editor.evaluateJavascript(jsCode, null)  // ✅ JavaScript execute karega WebView me
-    }
-    
-
-
-
-
 }

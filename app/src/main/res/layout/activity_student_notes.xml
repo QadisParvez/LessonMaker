@@ -24,6 +24,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.025" />
 
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="50dp"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/button_back"
+        app:layout_constraintEnd_toStartOf="@+id/SubjectName"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/linerLayout"
         android:layout_width="380dp"
@@ -41,45 +54,43 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
+        app:boxBackgroundColor="@color/gray"
         app:boxCornerRadiusBottomEnd="50dp"
         app:boxCornerRadiusBottomStart="50dp"
         app:boxCornerRadiusTopEnd="50dp"
         app:boxCornerRadiusTopStart="50dp"
+        app:boxStrokeColor="@android:color/black"
+        app:cursorColor="@color/biitGreen"
+        app:hintTextAppearance="@android:style/TextAppearance.Material.Small"
+        app:hintTextColor="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linerLayout"
-        android:layout_marginTop="20dp"
-        app:hintTextAppearance="@android:style/TextAppearance.Material.Small"
-        app:boxBackgroundColor="@color/gray"
-        app:boxStrokeColor="@android:color/black"
-        app:startIconDrawable="@drawable/baseline_search_24"
-        app:hintTextColor="@color/black"
-        app:cursorColor="@color/biitGreen">
+        app:startIconDrawable="@drawable/baseline_search_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/SearchByKeyword"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:hint="@string/searchKeyword"
             android:imeOptions="actionSearch"
             android:inputType="text"
-            android:hint="@string/searchKeyword"
-            android:textSize="17sp"
             android:paddingStart="50dp"
-            tools:ignore="RtlSymmetry"/>
+            android:textSize="17sp"
+            tools:ignore="RtlSymmetry" />
     </com.google.android.material.textfield.TextInputLayout>
-
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewNotes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:paddingBottom="10dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtLayoutKeyword"
         app:layout_constraintVertical_bias="0.029"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
@@ -10,7 +10,9 @@
     <androidx.cardview.widget.CardView
         android:layout_marginTop="5dp"
         android:layout_marginStart="12dp"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="10dp"
+
         android:layout_height="120dp"
         android:backgroundTint="@color/biitGreen"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,21 +99,22 @@
             </androidx.cardview.widget.CardView>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/Share"
                 android:layout_width="90dp"
                 android:layout_height="40dp"
+                android:layout_marginStart="20dp"
                 android:backgroundTint="@color/white"
                 android:fontFamily="@font/jost_medium"
                 android:text="@string/share"
-
                 android:textAlignment="center"
                 android:textColor="@color/biitGreen"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/SubjectName"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.2"
-                tools:layout_editor_absoluteX="280dp" />
+                tools:ignore="MissingConstraints" />
 
             <Button
                 android:id="@+id/openSubjectNotes"
@@ -124,8 +127,8 @@
                 android:textColor="@color/biitGreen"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/button"
-                app:layout_constraintTop_toBottomOf="@+id/button" />
+                app:layout_constraintStart_toStartOf="@+id/Share"
+                app:layout_constraintTop_toBottomOf="@+id/Share" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

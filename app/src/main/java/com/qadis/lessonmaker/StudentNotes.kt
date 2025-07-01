@@ -1,5 +1,6 @@
 package com.qadis.lessonmaker
 
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -11,10 +12,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.qadis.lessonmaker.Adapters.StudentNotesAdapter
-import com.qadis.lessonmaker.Model.WeekNo
+import com.qadis.lessonmaker.adapters.StudentNotesAdapter
 import com.qadis.lessonmaker.api.RetrofitClient
 import com.qadis.lessonmaker.databinding.ActivityStudentNotesBinding
+import com.qadis.lessonmaker.model.WeekNo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,9 +36,13 @@ class StudentNotes : AppCompatActivity() {
         binding = ActivityStudentNotesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.backButton.setOnClickListener { finish() }
+
         val subjectName = intent.getStringExtra("SubjectName") ?: "Unknown Subject"
         courseCode = intent.getStringExtra("CourseCode") ?: ""
+        Log.d("ReceivedCourseCode", "Received CourseCode: $courseCode")
 
+        Log.d("StudentNotes", "Received CourseCode: $courseCode")
         binding.SubjectName.text = subjectName
 
         setupRecyclerView()
@@ -53,34 +58,18 @@ class StudentNotes : AppCompatActivity() {
     private fun setupRecyclerView() {
         recyclerView = binding.recyclerViewNotes
         recyclerView.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-            }
-
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         adapter = StudentNotesAdapter(weekList) { selectedWeek ->
-            Toast.makeText(
-                this,
-                "Opening Notes For Week ${selectedWeek.weekNumber}",
-                Toast.LENGTH_SHORT
-            ).show()
             val intent = Intent(this, ShowNotesActivity::class.java)
             intent.putExtra("lessonId", selectedWeek.id)
             startActivity(intent)
         }
-
         recyclerView.adapter = adapter
     }
 
     private fun setupLiveSearchListener() {
         binding.SearchByKeyword.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val keyword = s.toString().trim()
                 if (keyword.isNotEmpty()) {
@@ -97,17 +86,14 @@ class StudentNotes : AppCompatActivity() {
     private fun loadWeeksFromApi(courseCode: String) {
         RetrofitClient.instance.getWeeksByCC(courseCode)
             .enqueue(object : Callback<List<WeekNo>> {
-                @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(
                     call: Call<List<WeekNo>>,
                     response: Response<List<WeekNo>>
                 ) {
                     if (response.isSuccessful) {
-                        val fetchedWeeks = response.body() ?: emptyList()
-                        weekList.clear()
-                        weekList.addAll(fetchedWeeks)
-                        adapter.notifyDataSetChanged()
-                        Log.d("WeekNotes", "Fetched weeks: ${fetchedWeeks.size}")
+                        val newList = response.body() ?: emptyList()
+                        adapter.updateList(newList)
+                        Log.d("WeekNotes", "Fetched weeks: ${newList.size}")
                     } else {
                         Toast.makeText(this@StudentNotes, "No weeks found!", Toast.LENGTH_SHORT)
                             .show()
@@ -115,7 +101,6 @@ class StudentNotes : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<List<WeekNo>>, t: Throwable) {
-                    Log.e("WeekNotesAPI", "Failed to load weeks", t)
                     Toast.makeText(
                         this@StudentNotes,
                         "Error: ${t.localizedMessage}",
@@ -128,16 +113,14 @@ class StudentNotes : AppCompatActivity() {
     private fun searchNotesByKeyword(courseCode: String, keyword: String) {
         RetrofitClient.instance.getWeeksByCourseCodeAndKeyword(courseCode, keyword)
             .enqueue(object : Callback<List<WeekNo>> {
-                @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(
                     call: Call<List<WeekNo>>,
                     response: Response<List<WeekNo>>
                 ) {
                     if (response.isSuccessful) {
-                        weekList.clear()
-                        weekList.addAll(response.body() ?: emptyList())
-                        adapter.notifyDataSetChanged()
-                        Log.d("SearchNotes", "Found ${weekList.size} notes")
+                        val filteredList = response.body() ?: emptyList()
+                        adapter.updateList(filteredList)
+                        Log.d("SearchNotes", "Found ${filteredList.size} notes")
                     } else {
                         Toast.makeText(
                             this@StudentNotes,
@@ -153,9 +136,8 @@ class StudentNotes : AppCompatActivity() {
                         "Search failed: ${t.localizedMessage}",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.e("SearchError", "API call failed", t)
                 }
             })
     }
-}
 
+}

@@ -1,10 +1,15 @@
 package com.qadis.lessonmaker.api
 
-import com.qadis.lessonmaker.Model.CurrentCourses
-import com.qadis.lessonmaker.Model.Subject
-import com.qadis.lessonmaker.Model.WeekNo
+import com.qadis.lessonmaker.model.CreateLessonResponse
+import com.qadis.lessonmaker.model.CurrentCourses
+import com.qadis.lessonmaker.model.LessonRequest
+import com.qadis.lessonmaker.model.Subject
+import com.qadis.lessonmaker.model.WeekNo
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 data class UserResponse(
@@ -27,7 +32,7 @@ interface ApiService {
         @Query("password") password: String
     ): Call<UserResponse>
 
-    @GET("Enrollment/getEnrolledCourses")
+    @GET("Enrollment/ViewEnrolledCourses")
     fun getEnrolledCourses(
         @Query("stdID") studentId: String,
         @Query("sessionID") sessionId: Int
@@ -58,6 +63,9 @@ interface ApiService {
         @Query("courseCode") courseCode: String,
         @Query("keyword") keyword: String
     ): Call<List<WeekNo>>
+
+    @POST("Pages/CreateLesson")
+    fun createLesson(@Body request: LessonRequest): Call<CreateLessonResponse>
 
 
 

@@ -57,4 +57,6 @@
     <string name="share">Share</string>
     <string name="view">View</string>
     <string name="backbutton">backButton</string>
+    <string name="generate_book">Generate Book</string>
+    <string name="no_lesson_created_yet">No Lesson Created Yet</string>
 </resources>

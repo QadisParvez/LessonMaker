@@ -1,6 +1,6 @@
-package com.qadis.lessonmaker.Adapters
+package com.qadis.lessonmaker.adapters
 
-import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +8,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.qadis.lessonmaker.Model.Subject
 import com.qadis.lessonmaker.R
-import com.qadis.lessonmaker.StudentNotes
-
+import com.qadis.lessonmaker.model.Subject
 
 class SubjectAdapter(
     private val SubjectList: List<Subject>,
@@ -32,21 +30,14 @@ class SubjectAdapter(
 
     override fun onBindViewHolder(holder: SubjectViewHolder, position: Int) {
         val subject = SubjectList[position]
-
         holder.subjectName.text = subject.subjectName
         holder.teacherName.text = subject.teacherName
 
         holder.openNotes.setOnClickListener {
-            val context = holder.itemView.context
+            Toast.makeText(holder.itemView.context, "Open Notes button clicked", Toast.LENGTH_SHORT).show()
+            Log.d("SubjectAdapter", "CourseCode: ${subject.courseCode}")
 
-            if (!subject.courseCode.isNullOrBlank()) {
-                val intent = Intent(context, StudentNotes::class.java)
-                intent.putExtra("SubjectName", subject.subjectName)
-                intent.putExtra("CourseCode", subject.courseCode)
-                context.startActivity(intent)
-            } else {
-                Toast.makeText(context, "Course code not available!", Toast.LENGTH_SHORT).show()
-            }
+            onItemClick(subject)
         }
     }
 

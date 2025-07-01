@@ -1,38 +1,40 @@
-package com.qadis.lessonmaker.Adapters
+package com.qadis.lessonmaker.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.qadis.lessonmaker.Model.Notes
-import com.qadis.lessonmaker.R
+import com.qadis.lessonmaker.databinding.ListItemDownloadedNotsBinding
+import com.qadis.lessonmaker.sqlite.DownloadedNote
+
 class DownloadedNotesAdapter(
-    private val listOfNotes: List<Notes>,
-    private val onItemClick: (Notes) -> Unit
-) : RecyclerView.Adapter<DownloadedNotesAdapter.NotesViewHolder>() {
+    private val notes: List<DownloadedNote>,
+    private val onViewClick: (DownloadedNote) -> Unit,
+    private val onShareClick: (DownloadedNote) -> Unit
+) : RecyclerView.Adapter<DownloadedNotesAdapter.NoteViewHolder>() {
 
-    class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val weekText: TextView = itemView.findViewById(R.id.weekText)
-        val openNotesCard: CardView = itemView.findViewById(R.id.openNotes)
-        val openButton: Button = itemView.findViewById(R.id.openSubjectNotes)
+    inner class NoteViewHolder(val binding: ListItemDownloadedNotsBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
+        val binding = ListItemDownloadedNotsBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false)
+        return NoteViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_downloaded_nots, parent, false)
-        return NotesViewHolder(view)
-    }
+    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+        val note = notes[position]
 
-    override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
-        val note = listOfNotes[position]
-        holder.weekText.text = note.subjectName
+        holder.binding.SubjectName.text = note.subjectName
+        holder.binding.teachersName.text = "Week ${note.weekNumber}"
 
-        holder.openButton.setOnClickListener {
-            onItemClick(note)
+        holder.binding.openSubjectNotes.setOnClickListener {
+            onViewClick(note)
+        }
+
+        holder.binding.Share.setOnClickListener {
+            onShareClick(note)
         }
     }
 
-    override fun getItemCount(): Int = listOfNotes.size
+    override fun getItemCount(): Int = notes.size
 }

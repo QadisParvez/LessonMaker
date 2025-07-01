@@ -1,6 +1,5 @@
 package com.qadis.lessonmaker
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.qadis.lessonmaker.Adapters.SubjectAdapter
-import com.qadis.lessonmaker.Model.Subject
+import com.qadis.lessonmaker.adapters.SubjectAdapter
+import com.qadis.lessonmaker.model.Subject
 import com.qadis.lessonmaker.api.RetrofitClient
 import com.qadis.lessonmaker.databinding.ActivityStudentDashboardBinding
 import retrofit2.Call
@@ -33,56 +32,54 @@ class StudentDashboard : AppCompatActivity() {
         binding = ActivityStudentDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Side Navigation
-        binding.SideNavigation.setOnClickListener {
-            val intent = Intent(this@StudentDashboard, StudentNavBar::class.java)
-            startActivity(intent)
-        }
-
         // Logout
         binding.Logout.setOnClickListener {
-            val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-            sharedPref.edit().clear().apply()
+            getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit().clear().apply()
             startActivity(Intent(this, LoginPage::class.java))
             finish()
         }
 
-        // Show username
+        // Side navigation
+        binding.SideNavigation.setOnClickListener {
+            startActivity(Intent(this, StudentNavBar::class.java))
+        }
+
+        // Greet user
         val userName = intent.getStringExtra("UserName") ?: "Unknown"
         binding.nameSem.text = "Welcome $userName"
 
-        // RecyclerView setup
-        recyclerView = binding.studentDashboardListItem
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Adapter setup
+        // RecyclerView + Adapter
         subjectAdapter = SubjectAdapter(subjectsList) { subject ->
-            val intent = Intent(this@StudentDashboard, StudentNotes::class.java)
-            intent.putExtra("SubjectName", subject.subjectName)
-            intent.putExtra("CourseCode", subject.courseCode)
-            startActivity(intent)
+            if (!subject.courseCode.isNullOrBlank()) {
+                val intent = Intent(this, StudentNotes::class.java)
+                intent.putExtra("SubjectName", subject.subjectName)
+                intent.putExtra("CourseCode", subject.courseCode)
+                Log.d("CourseCode To be Passed", "Course Code sent: ${subject.courseCode}")
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No course code available", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        recyclerView.adapter = subjectAdapter
+        binding.studentDashboardListItem.apply {
+            layoutManager = LinearLayoutManager(this@StudentDashboard)
+            adapter = subjectAdapter
+        }
 
-        // Start fetching subjects
         fetchSubjects()
     }
 
     private fun fetchSubjects() {
         val receiveUserID = intent.getStringExtra("UserID")
+        Log.d("DEBUG_INTENT", "Received UserID: $receiveUserID")
 
         if (receiveUserID.isNullOrEmpty()) {
             Toast.makeText(this, "Error: UserID not found in intent", Toast.LENGTH_SHORT).show()
-            Log.e("IntentError", "UserID missing from intent")
             return
         }
 
-        val lastPart = receiveUserID.substringAfterLast("-")
-        val finalID = "S$lastPart"
+        val finalID = receiveUserID // already in S4566 format
         val sessionID = 5
-
-        Log.d("ReceivedUserID", "Raw: $receiveUserID → FinalID: $finalID")
 
         RetrofitClient.instance.getEnrolledCourses(finalID, sessionID)
             .enqueue(object : Callback<List<Subject>> {
@@ -91,26 +88,33 @@ class StudentDashboard : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val subjects = response.body() ?: emptyList()
 
-                        Log.d("API_RESPONSE", "Subjects List Size: ${subjects.size}")
-                        Log.d("API_RAW", subjects.toString())
+                        subjectsList.clear()
 
-                        if (subjects.isEmpty()) {
-                            Toast.makeText(this@StudentDashboard, "No subjects found!", Toast.LENGTH_SHORT).show()
+                        subjects.forEach { subject ->
+                            if (!subject.subjectName.isNullOrBlank() && !subject.courseCode.isNullOrBlank()) {
+                                subjectsList.add(subject)
+                            } else {
+                                Log.w("DEBUG_SUBJECTS", "Skipped invalid subject: $subject")
+                            }
                         }
 
-                        subjectsList.clear()
-                        subjectsList.addAll(subjects)
                         subjectAdapter.notifyDataSetChanged()
+
+                        if (subjectsList.isEmpty()) {
+                            Toast.makeText(this@StudentDashboard, "No enrolled subjects found", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Log.d("DEBUG_SUBJECTS", "Subjects loaded: ${subjectsList.size}")
+                        }
+
                     } else {
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("API_ERROR", "Code: ${response.code()}, Error: $errorBody")
                         Toast.makeText(this@StudentDashboard, "Failed to load subjects", Toast.LENGTH_SHORT).show()
+                        Log.e("API_ERROR", "Response Code: ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<List<Subject>>, t: Throwable) {
-                    Log.e("API_FAILURE", "Error fetching subjects", t)
                     Toast.makeText(this@StudentDashboard, "Error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    Log.e("API_ERROR", "Network failure", t)
                 }
             })
     }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,7 +33,8 @@ class LoginPage : AppCompatActivity() {
                 bind.progressBar.visibility = View.VISIBLE
                 loginUser(userID, password, bind)
             } else {
-                Toast.makeText(this, "Enter All Required Fields To Login", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Enter All Required Fields To Login", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -43,8 +45,11 @@ class LoginPage : AppCompatActivity() {
 
         RetrofitClient.instance.getUser(trimmedUserId, trimmedPassword)
             .enqueue(object : Callback<UserResponse> {
-                override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                    bind.progressBar.visibility = View.GONE // ❌ Hide spinner
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    bind.progressBar.visibility = View.GONE
 
                     if (response.isSuccessful && response.body() != null) {
                         val loginResponse = response.body()!!
@@ -58,31 +63,57 @@ class LoginPage : AppCompatActivity() {
 
                             Toast.makeText(this@LoginPage, roleMessage, Toast.LENGTH_SHORT).show()
 
+                            val actualUserId = when (loginResponse.role) {
+                                3 -> { // Student: 2021-arid-4566 -> S4566
+                                    val lastPart = trimmedUserId.takeLastWhile { it.isDigit() }
+                                    "S$lastPart"
+                                }
+                                2 -> { // Teacher: Biit124 -> T124
+                                    val digits = trimmedUserId.filter { it.isDigit() }
+                                    "T$digits"
+                                }
+                                else -> trimmedUserId
+                            }
+
                             val intent = when (loginResponse.role) {
                                 3 -> Intent(this@LoginPage, StudentDashboard::class.java)
                                 2 -> Intent(this@LoginPage, TeacherDashboard::class.java)
                                 else -> null
                             }
 
-                            intent?.putExtra("UserID", userId)
+                            intent?.putExtra("UserID", actualUserId)
                             intent?.putExtra("UserName", loginResponse.name)
+                            Log.d("ID to be send", "UserID: $actualUserId")
                             intent?.let {
                                 startActivity(it)
                                 finish()
                             }
 
                         } else {
-                            Toast.makeText(this@LoginPage, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@LoginPage,
+                                "Invalid Credentials",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
-                        Toast.makeText(this@LoginPage, "Login failed! Try again.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@LoginPage,
+                            "Login failed! Try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                     bind.progressBar.visibility = View.GONE
-                    Toast.makeText(this@LoginPage, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@LoginPage,
+                        "Network Error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
     }
+
 }

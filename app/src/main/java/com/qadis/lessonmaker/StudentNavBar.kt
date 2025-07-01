@@ -14,7 +14,7 @@ class StudentNavBar : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.DownloadedNotesButton.setOnClickListener {
-        val intent = Intent(this, DownloadedNotes::class.java)
+        val intent = Intent(this@StudentNavBar, DownloadedNotes::class.java)
             startActivity(intent)
         }
         binding.Requests.setOnClickListener {

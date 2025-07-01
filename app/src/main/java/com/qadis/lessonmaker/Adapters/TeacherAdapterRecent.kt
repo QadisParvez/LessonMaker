@@ -1,11 +1,11 @@
-package com.qadis.lessonmaker.Adapters
+package com.qadis.lessonmaker.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.qadis.lessonmaker.Model.Teacher
+import com.qadis.lessonmaker.model.Teacher
 import com.qadis.lessonmaker.R
 
 class TeacherAdapterRecent(
@@ -19,7 +19,7 @@ class TeacherAdapterRecent(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeacherViewHolderRecent {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.teacher_recenet_courses, parent, false) // FIXED Layout Name
+            .inflate(R.layout.teacher_recenet_courses, parent, false)
         return TeacherViewHolderRecent(view)
     }
 

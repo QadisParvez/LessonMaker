@@ -8,30 +8,38 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.qadis.lessonmaker.Adapters.TeacherAdapter
-import com.qadis.lessonmaker.Adapters.TeacherAdapterRecent
-import com.qadis.lessonmaker.Model.CurrentCourses
-import com.qadis.lessonmaker.Model.Teacher
+import com.qadis.lessonmaker.adapters.TeacherAdapter
+import com.qadis.lessonmaker.adapters.TeacherAdapterRecent
 import com.qadis.lessonmaker.api.RetrofitClient
 import com.qadis.lessonmaker.databinding.ActivityTeacherDashboardBinding
+import com.qadis.lessonmaker.model.CurrentCourses
+import com.qadis.lessonmaker.model.Teacher
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class TeacherDashboard : AppCompatActivity() {
+
+    private lateinit var teacherId: String
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val teacherDashboard = ActivityTeacherDashboardBinding.inflate(layoutInflater)
         setContentView(teacherDashboard.root)
 
-        val recyclerView1: RecyclerView = findViewById<RecyclerView>(R.id.CurrentCourses)
-        val recyclerView2: RecyclerView = findViewById<RecyclerView>(R.id.RecentCourses)
+        // Get teacher ID from intent
+        teacherId = intent.getStringExtra("UserID") ?: ""
+
+        val recyclerView1: RecyclerView = findViewById(R.id.CurrentCourses)
+        val recyclerView2: RecyclerView = findViewById(R.id.RecentCourses)
+
         recyclerView1.layoutManager =
             LinearLayoutManager(this@TeacherDashboard, LinearLayoutManager.HORIZONTAL, false)
         recyclerView2.layoutManager =
             LinearLayoutManager(this@TeacherDashboard, LinearLayoutManager.VERTICAL, false)
-
 
         val currentCoursesList = mutableListOf<Teacher>()
         val recentCoursesList = mutableListOf<Teacher>()
@@ -45,11 +53,14 @@ class TeacherDashboard : AppCompatActivity() {
         fetchAllCourses(adapter2, recentCoursesList)
         getCurrentCourses(adapter1, currentCoursesList)
 
-
-
         teacherDashboard.openEditor.setOnClickListener {
             val openEditor = Intent(this@TeacherDashboard, EditorScreen::class.java)
             startActivity(openEditor)
+        }
+
+        teacherDashboard.menuButton.setOnClickListener {
+            val intent = Intent(this@TeacherDashboard, TeacheNav::class.java)
+            startActivity(intent)
         }
 
         teacherDashboard.Logout.setOnClickListener {
@@ -58,8 +69,6 @@ class TeacherDashboard : AppCompatActivity() {
             startActivity(Intent(this, LoginPage::class.java))
             finish()
         }
-
-
     }
 
     fun fetchAllCourses(
@@ -90,11 +99,12 @@ class TeacherDashboard : AppCompatActivity() {
     }
 
     fun getCurrentCourses(adapter: TeacherAdapter, currentCourseList: MutableList<Teacher>) {
-        val call = RetrofitClient.instance.getCurrentCourses("T124")
+        val call = RetrofitClient.instance.getCurrentCourses(teacherId)  // dynamic ID used
 
         Log.d("API_DEBUG", "Calling URL: ${call.request()}")
 
         call.enqueue(object : Callback<List<CurrentCourses>> {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(
                 call: Call<List<CurrentCourses>>,
                 response: Response<List<CurrentCourses>>

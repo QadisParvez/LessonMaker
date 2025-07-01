@@ -1,4 +1,4 @@
-package com.qadis.lessonmaker.Model
+package com.qadis.lessonmaker.model
 
 data class  WeekNo(
     val id: Int,

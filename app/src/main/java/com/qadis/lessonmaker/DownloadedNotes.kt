@@ -2,18 +2,21 @@ package com.qadis.lessonmaker
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qadis.lessonmaker.Adapters.DownloadedNotesAdapter
-import com.qadis.lessonmaker.Model.Notes
+import com.qadis.lessonmaker.adapters.DownloadedNotesAdapter
+import com.qadis.lessonmaker.sqlite.NotesDatabaseHelper
 import com.qadis.lessonmaker.databinding.ActivityDownloadedNotesBinding
+import com.qadis.lessonmaker.sqlite.DownloadedNote
 
 class DownloadedNotes : AppCompatActivity() {
 
     private lateinit var binding: ActivityDownloadedNotesBinding
-    private lateinit var notesAdapter: DownloadedNotesAdapter
-    private lateinit var notesList: List<Notes>
+    private lateinit var adapter: DownloadedNotesAdapter
+    private lateinit var dbHelper: NotesDatabaseHelper
+    private val noteList = mutableListOf<DownloadedNote>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,29 +24,43 @@ class DownloadedNotes : AppCompatActivity() {
         binding = ActivityDownloadedNotesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.mainContent.settings.javaScriptEnabled = true
+        dbHelper = NotesDatabaseHelper(this)
 
-        notesList = listOf(
-            Notes("Math", "Sir Ali", "<h2>Math Notes</h2><p>This is math content</p>"),
-            Notes("Physics", "Miss Sana", "<h2>Physics Notes</h2><p>Some physics content here</p>"),
-            Notes("Chemistry", "Sir Usman", "<h2>Chemistry</h2><p>Details of chemistry</p>")
+        binding.NoteWebView.settings.javaScriptEnabled = true
+        binding.NoteWebView.settings.domStorageEnabled = true
+
+        adapter = DownloadedNotesAdapter(
+            notes = noteList,
+            onViewClick = { note ->
+                binding.SelectedSubjectName.text = note.subjectName
+                binding.SelectedWeekNo.text = "Week ${note.weekNumber}"
+
+                binding.SelectedSubjectName.visibility = View.VISIBLE
+                binding.SelectedWeekNo.visibility = View.VISIBLE
+                binding.NoteWebView.visibility = View.VISIBLE
+
+                binding.NoteWebView.loadDataWithBaseURL(
+                    null,
+                    note.htmlContent,
+                    "text/html",
+                    "UTF-8",
+                    null
+                )
+            },
+            onShareClick = { note ->
+                Toast.makeText(this, "Share lesson ${note.lessonId}", Toast.LENGTH_SHORT).show()
+            }
         )
 
-        notesAdapter = DownloadedNotesAdapter(notesList) { selectedNote ->
-            binding.mainContent.loadDataWithBaseURL(
-                null,
-                selectedNote.content,
-                "text/html",
-                "UTF-8",
-                null
-            )
-            binding.main.visibility = View.VISIBLE
-        }
-
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = notesAdapter
+        binding.recyclerView.adapter = adapter
 
+        loadDownloadedNotesFromDB()
+    }
 
-
+    private fun loadDownloadedNotesFromDB() {
+        noteList.clear()
+        noteList.addAll(dbHelper.getAllDownloadedNotes())
+        adapter.notifyDataSetChanged()
     }
 }
