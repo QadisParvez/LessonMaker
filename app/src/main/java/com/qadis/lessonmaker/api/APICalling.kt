@@ -40,12 +40,11 @@ interface ApiService {
 
 
     @GET("Courses/GetCourses")
-    fun getAllCourses():Call<List<String>>
+    fun getAllCourses(): Call<List<String>>
 
-    @GET("Courses/GetCurrentCourses")
-    fun getCurrentCourses(
-        @Query("id") teacherID:String
-    ):Call<List<CurrentCourses>>
+    @GET("Courses/getTeacherCourseDetails")
+    fun getTeacherCourseDetails(@Query("teacherID") teacherId: String): Call<List<String>>
+
 
     @GET("Lesson/SearchByCourseCode")
     fun getWeeksByCC(
@@ -66,11 +65,5 @@ interface ApiService {
 
     @POST("Pages/CreateLesson")
     fun createLesson(@Body request: LessonRequest): Call<CreateLessonResponse>
-
-
-
-
-
-
 
 }

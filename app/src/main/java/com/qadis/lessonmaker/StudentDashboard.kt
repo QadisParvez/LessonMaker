@@ -52,6 +52,7 @@ class StudentDashboard : AppCompatActivity() {
         subjectAdapter = SubjectAdapter(subjectsList) { subject ->
             if (!subject.courseCode.isNullOrBlank()) {
                 val intent = Intent(this, StudentNotes::class.java)
+                intent.putExtra("lessonId", subject.lessonID)
                 intent.putExtra("SubjectName", subject.subjectName)
                 intent.putExtra("CourseCode", subject.courseCode)
                 Log.d("CourseCode To be Passed", "Course Code sent: ${subject.courseCode}")

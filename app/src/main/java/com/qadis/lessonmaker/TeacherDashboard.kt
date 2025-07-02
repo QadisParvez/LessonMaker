@@ -99,34 +99,33 @@ class TeacherDashboard : AppCompatActivity() {
     }
 
     fun getCurrentCourses(adapter: TeacherAdapter, currentCourseList: MutableList<Teacher>) {
-        val call = RetrofitClient.instance.getCurrentCourses(teacherId)  // dynamic ID used
+        RetrofitClient.instance.getTeacherCourseDetails(teacherId)
+            .enqueue(object : Callback<List<String>> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(
+                    call: Call<List<String>>,
+                    response: Response<List<String>>
+                ) {
+                    if (response.isSuccessful) {
+                        val courses = response.body() ?: emptyList()
+                        Log.d("API_RESPONSE", "Teacher's Courses: $courses")
 
-        Log.d("API_DEBUG", "Calling URL: ${call.request()}")
-
-        call.enqueue(object : Callback<List<CurrentCourses>> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(
-                call: Call<List<CurrentCourses>>,
-                response: Response<List<CurrentCourses>>
-            ) {
-                if (response.isSuccessful) {
-                    val courses = response.body() ?: emptyList()
-                    Log.d("API_RESPONSE", "Current Courses: $courses")
-
-                    currentCourseList.clear()
-                    for (course in courses) {
-                        currentCourseList.add(Teacher(course.subjectName))
+                        currentCourseList.clear()
+                        for (title in courses) {
+                            currentCourseList.add(Teacher(title)) // Wrap string into Teacher model
+                        }
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        Log.e("API_ERROR", "RESPONSE UNSUCCESSFUL - Code: ${response.code()}")
+                        Log.e("API_ERROR", "Error Body: ${response.errorBody()?.string()}")
                     }
-                    adapter.notifyDataSetChanged()
-                } else {
-                    Log.e("API_ERROR", "RESPONSE UNSUCCESSFUL - Code: ${response.code()}")
-                    Log.e("API_ERROR", "Error Body: ${response.errorBody()?.string()}")
                 }
-            }
 
-            override fun onFailure(call: Call<List<CurrentCourses>>, t: Throwable) {
-                Log.e("API_ERROR", "Failed to fetch current courses", t)
-            }
-        })
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                    Log.e("API_ERROR", "Failed to fetch teacher courses", t)
+                }
+            })
     }
+
+
 }

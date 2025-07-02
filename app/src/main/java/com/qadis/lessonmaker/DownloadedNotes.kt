@@ -1,15 +1,21 @@
 package com.qadis.lessonmaker
 
+
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebSettings
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qadis.lessonmaker.adapters.DownloadedNotesAdapter
-import com.qadis.lessonmaker.sqlite.NotesDatabaseHelper
 import com.qadis.lessonmaker.databinding.ActivityDownloadedNotesBinding
 import com.qadis.lessonmaker.sqlite.DownloadedNote
+import com.qadis.lessonmaker.sqlite.NotesDatabaseHelper
+import java.io.File
+
 
 class DownloadedNotes : AppCompatActivity() {
 
@@ -25,10 +31,21 @@ class DownloadedNotes : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = NotesDatabaseHelper(this)
+        dbHelper = NotesDatabaseHelper(this)
 
-        binding.NoteWebView.settings.javaScriptEnabled = true
-        binding.NoteWebView.settings.domStorageEnabled = true
+        setupWebView()
+        setupRecyclerView()
+        loadDownloadedNotesFromDB()
+    }
 
+    private fun setupWebView() {
+        val settings: WebSettings = binding.NoteWebView.settings
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        binding.NoteWebView.setBackgroundColor(0xFFFFFF)
+    }
+
+    private fun setupRecyclerView() {
         adapter = DownloadedNotesAdapter(
             notes = noteList,
             onViewClick = { note ->
@@ -48,19 +65,74 @@ class DownloadedNotes : AppCompatActivity() {
                 )
             },
             onShareClick = { note ->
-                Toast.makeText(this, "Share lesson ${note.lessonId}", Toast.LENGTH_SHORT).show()
+                shareNoteContent(note)
             }
         )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
-
-        loadDownloadedNotesFromDB()
     }
 
     private fun loadDownloadedNotesFromDB() {
         noteList.clear()
         noteList.addAll(dbHelper.getAllDownloadedNotes())
         adapter.notifyDataSetChanged()
+    }
+
+    private fun shareNoteContent(note: DownloadedNote) {
+        val pdfFile = File(getExternalFilesDir(null), "Lesson_${note.lessonId}.pdf")
+
+        val webView = android.webkit.WebView(this)
+        webView.settings.javaScriptEnabled = true
+        webView.loadDataWithBaseURL(null, note.htmlContent, "text/html", "utf-8", null)
+
+        webView.post {
+            val webView = android.webkit.WebView(this)
+            webView.settings.javaScriptEnabled = true
+
+            webView.webViewClient = object : android.webkit.WebViewClient() {
+                override fun onPageFinished(view: android.webkit.WebView?, url: String?) {
+                    // WebView is fully loaded, now draw it
+                    val document = android.graphics.pdf.PdfDocument()
+                    val pageInfo =
+                        android.graphics.pdf.PdfDocument.PageInfo.Builder(792, 1120, 1).create()
+                    val page = document.startPage(pageInfo)
+                    webView.draw(page.canvas)
+                    document.finishPage(page)
+
+                    try {
+                        val pdfFile = File(getExternalFilesDir(null), "Lesson_${note.lessonId}.pdf")
+                        pdfFile.outputStream().use {
+                            document.writeTo(it)
+                        }
+                        document.close()
+
+                        val uri = FileProvider.getUriForFile(
+                            this@DownloadedNotes,
+                            "$packageName.fileprovider",
+                            pdfFile
+                        )
+
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "application/pdf"
+                        intent.putExtra(Intent.EXTRA_STREAM, uri)
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        startActivity(Intent.createChooser(intent, "Share Note PDF"))
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(
+                            this@DownloadedNotes,
+                            "PDF creation failed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+// Important: this must be set *before* loadData
+            webView.loadDataWithBaseURL(null, note.htmlContent, "text/html", "UTF-8", null)
+
+        }
     }
 }

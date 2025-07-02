@@ -3,6 +3,9 @@ package com.qadis.lessonmaker.model
 import com.google.gson.annotations.SerializedName
 
 data class Subject(
+    @SerializedName("lessonId")
+    val lessonID:Int,
+
     @SerializedName("title")
     val subjectName: String,
 

@@ -166,6 +166,33 @@
             </HorizontalScrollView>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:id="@+id/CourseCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:hint="@string/course_code_here"
+        app:layout_constraintHorizontal_bias="0.157"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ActioncardLayout" />
+
+    <EditText
+        android:id="@+id/WeekNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Week No Here"
+        android:inputType="number"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@+id/CourseCode"
+        app:layout_constraintBottom_toBottomOf="@+id/CourseCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/CourseCode" />
+
+
 <!--    action bar end-->
 <!--    main content screen-->
 <!--    main content screen end-->
@@ -174,7 +201,7 @@
         android:id="@+id/editor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="180dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="25dp"
