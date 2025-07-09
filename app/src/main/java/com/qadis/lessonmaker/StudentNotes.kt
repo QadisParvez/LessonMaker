@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -93,19 +94,23 @@ class StudentNotes : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val newList = response.body() ?: emptyList()
                         adapter.updateList(newList)
+
+                        if (newList.isEmpty()) {
+                            binding.noNotesMessage.visibility = View.VISIBLE
+                            binding.recyclerViewNotes.visibility = View.GONE
+                        } else {
+                            binding.noNotesMessage.visibility = View.GONE
+                            binding.recyclerViewNotes.visibility = View.VISIBLE
+                        }
+
                         Log.d("WeekNotes", "Fetched weeks: ${newList.size}")
                     } else {
-                        Toast.makeText(this@StudentNotes, "No weeks found!", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this@StudentNotes, "No weeks found!", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<List<WeekNo>>, t: Throwable) {
-                    Toast.makeText(
-                        this@StudentNotes,
-                        "Error: ${t.localizedMessage}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@StudentNotes, "Error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
             })
     }
@@ -120,24 +125,26 @@ class StudentNotes : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val filteredList = response.body() ?: emptyList()
                         adapter.updateList(filteredList)
+
+                        if (filteredList.isEmpty()) {
+                            binding.noNotesMessage.visibility = View.VISIBLE
+                            binding.recyclerViewNotes.visibility = View.GONE
+                        } else {
+                            binding.noNotesMessage.visibility = View.GONE
+                            binding.recyclerViewNotes.visibility = View.VISIBLE
+                        }
+
                         Log.d("SearchNotes", "Found ${filteredList.size} notes")
                     } else {
-                        Toast.makeText(
-                            this@StudentNotes,
-                            "No matching notes found!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@StudentNotes, "No matching notes found!", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<List<WeekNo>>, t: Throwable) {
-                    Toast.makeText(
-                        this@StudentNotes,
-                        "Search failed: ${t.localizedMessage}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@StudentNotes, "Search failed: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
             })
     }
+
 
 }

@@ -60,4 +60,5 @@
     <string name="generate_book">Generate Book</string>
     <string name="no_lesson_created_yet">No Lesson Created Yet</string>
     <string name="course_code_here">Course Code here</string>
+    <string name="no_notes_created_yet">No notes created yet</string>
 </resources>

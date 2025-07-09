@@ -91,14 +91,15 @@ class StudentDashboard : AppCompatActivity() {
 
                         subjectsList.clear()
 
-                        subjects.forEach { subject ->
-                            if (!subject.subjectName.isNullOrBlank() && !subject.courseCode.isNullOrBlank()) {
-                                subjectsList.add(subject)
-                            } else {
-                                Log.w("DEBUG_SUBJECTS", "Skipped invalid subject: $subject")
+                        // Filter valid entries and remove duplicates based on subjectName + courseCode
+                        val uniqueSubjects = subjects
+                            .filter {
+                                !it.subjectName.isNullOrBlank() &&
+                                        !it.courseCode.isNullOrBlank()
                             }
-                        }
+                            .distinctBy { it.subjectName.trim() + it.courseCode.trim() }
 
+                        subjectsList.addAll(uniqueSubjects)
                         subjectAdapter.notifyDataSetChanged()
 
                         if (subjectsList.isEmpty()) {
@@ -119,4 +120,5 @@ class StudentDashboard : AppCompatActivity() {
                 }
             })
     }
+
 }

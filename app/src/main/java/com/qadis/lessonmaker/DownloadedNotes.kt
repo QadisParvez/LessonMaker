@@ -1,6 +1,7 @@
 package com.qadis.lessonmaker
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,6 +19,7 @@ import java.io.File
 
 
 class DownloadedNotes : AppCompatActivity() {
+
 
     private lateinit var binding: ActivityDownloadedNotesBinding
     private lateinit var adapter: DownloadedNotesAdapter
@@ -38,6 +40,7 @@ class DownloadedNotes : AppCompatActivity() {
         loadDownloadedNotesFromDB()
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
         val settings: WebSettings = binding.NoteWebView.settings
         settings.javaScriptEnabled = true
@@ -45,6 +48,7 @@ class DownloadedNotes : AppCompatActivity() {
         binding.NoteWebView.setBackgroundColor(0xFFFFFF)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupRecyclerView() {
         adapter = DownloadedNotesAdapter(
             notes = noteList,
@@ -73,12 +77,14 @@ class DownloadedNotes : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadDownloadedNotesFromDB() {
         noteList.clear()
         noteList.addAll(dbHelper.getAllDownloadedNotes())
         adapter.notifyDataSetChanged()
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun shareNoteContent(note: DownloadedNote) {
         val pdfFile = File(getExternalFilesDir(null), "Lesson_${note.lessonId}.pdf")
 

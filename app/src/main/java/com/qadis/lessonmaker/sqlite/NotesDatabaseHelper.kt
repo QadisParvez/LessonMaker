@@ -27,15 +27,26 @@ class NotesDatabaseHelper(context: Context) :
 
     fun insertNote(note: DownloadedNote): Boolean {
         val db = writableDatabase
+
+        // Check if already exists
+        val cursor = db.rawQuery("SELECT * FROM notes WHERE lessonId = ?", arrayOf(note.lessonId.toString()))
+        if (cursor.moveToFirst()) {
+            cursor.close()
+            return false // Duplicate found
+        }
+        cursor.close()
+
         val values = ContentValues().apply {
             put("lessonId", note.lessonId)
             put("subjectName", note.subjectName)
             put("weekNumber", note.weekNumber)
             put("htmlContent", note.htmlContent)
         }
+
         val result = db.insert("notes", null, values)
         return result != -1L
     }
+
 
     fun getAllDownloadedNotes(): List<DownloadedNote> {
         val notes = mutableListOf<DownloadedNote>()

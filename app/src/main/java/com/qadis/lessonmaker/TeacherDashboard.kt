@@ -36,10 +36,8 @@ class TeacherDashboard : AppCompatActivity() {
         val recyclerView1: RecyclerView = findViewById(R.id.CurrentCourses)
         val recyclerView2: RecyclerView = findViewById(R.id.RecentCourses)
 
-        recyclerView1.layoutManager =
-            LinearLayoutManager(this@TeacherDashboard, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView2.layoutManager =
-            LinearLayoutManager(this@TeacherDashboard, LinearLayoutManager.VERTICAL, false)
+        recyclerView1.layoutManager = LinearLayoutManager(this@TeacherDashboard, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView2.layoutManager = LinearLayoutManager(this@TeacherDashboard, LinearLayoutManager.VERTICAL, false)
 
         val currentCoursesList = mutableListOf<Teacher>()
         val recentCoursesList = mutableListOf<Teacher>()
