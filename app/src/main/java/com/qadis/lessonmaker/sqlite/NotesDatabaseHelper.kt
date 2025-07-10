@@ -5,11 +5,15 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.qadis.lessonmaker.sqlite.DownloadedNote
+import com.qadis.lessonmaker.model.Bookmark
+import com.qadis.lessonmaker.model.VoiceNote
+import com.qadis.lessonmaker.model.DeletedContent
 
 class NotesDatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, "LessonNotes.db", null, 1) {
+    SQLiteOpenHelper(context, "LessonNotes.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
+        // Original notes table
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS notes (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -18,11 +22,92 @@ class NotesDatabaseHelper(context: Context) :
                     "weekNumber INTEGER," +
                     "htmlContent TEXT)"
         )
+        
+        // Bookmarks table
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS bookmarks (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "lessonId INTEGER," +
+                    "subjectName TEXT," +
+                    "teacherName TEXT," +
+                    "weekNumber INTEGER," +
+                    "title TEXT," +
+                    "courseCode TEXT," +
+                    "bookmarkedAt INTEGER," +
+                    "isActive INTEGER DEFAULT 1)"
+        )
+        
+        // Voice notes table
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS voice_notes (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "lessonId INTEGER," +
+                    "subjectName TEXT," +
+                    "audioFilePath TEXT," +
+                    "duration INTEGER," +
+                    "title TEXT," +
+                    "description TEXT," +
+                    "recordedAt INTEGER," +
+                    "isActive INTEGER DEFAULT 1)"
+        )
+        
+        // Deleted content table for recovery
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS deleted_content (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "originalId INTEGER," +
+                    "contentType TEXT," +
+                    "title TEXT," +
+                    "content TEXT," +
+                    "metadata TEXT," +
+                    "deletedAt INTEGER," +
+                    "deletedBy TEXT," +
+                    "canRestore INTEGER DEFAULT 1)"
+        )
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS notes")
-        onCreate(db)
+        if (oldVersion < 2) {
+            // Add new tables for version 2
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS bookmarks (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "lessonId INTEGER," +
+                        "subjectName TEXT," +
+                        "teacherName TEXT," +
+                        "weekNumber INTEGER," +
+                        "title TEXT," +
+                        "courseCode TEXT," +
+                        "bookmarkedAt INTEGER," +
+                        "isActive INTEGER DEFAULT 1)"
+            )
+            
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS voice_notes (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "lessonId INTEGER," +
+                        "subjectName TEXT," +
+                        "audioFilePath TEXT," +
+                        "duration INTEGER," +
+                        "title TEXT," +
+                        "description TEXT," +
+                        "recordedAt INTEGER," +
+                        "isActive INTEGER DEFAULT 1)"
+            )
+            
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS deleted_content (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "originalId INTEGER," +
+                        "contentType TEXT," +
+                        "title TEXT," +
+                        "content TEXT," +
+                        "metadata TEXT," +
+                        "deletedAt INTEGER," +
+                        "deletedBy TEXT," +
+                        "canRestore INTEGER DEFAULT 1)"
+            )
+        }
     }
 
     fun insertNote(note: DownloadedNote): Boolean {
