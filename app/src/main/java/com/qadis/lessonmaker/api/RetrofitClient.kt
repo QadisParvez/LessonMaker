@@ -1,14 +1,18 @@
 package com.qadis.lessonmaker.api
 
+import com.qadis.lessonmaker.model.ConfigManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.100.73/fypAPI/api/"
+    // Updated to use configurable domain
+    private fun getBaseUrl(): String {
+        return ConfigManager.getApiBaseUrl()
+    }
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -17,4 +21,10 @@ object RetrofitClient {
         retrofit.create(ApiService::class.java)
     }
 
+    // Method to recreate client with new base URL
+    fun updateBaseUrl(newBaseUrl: String) {
+        ConfigManager.updateConfig(
+            ConfigManager.getConfig().copy(apiBaseUrl = newBaseUrl)
+        )
+    }
 }
