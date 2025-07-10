@@ -1,14 +1,18 @@
         package com.qadis.lessonmaker
 
         import android.annotation.SuppressLint
+        import android.content.Intent
         import android.os.Bundle
         import android.util.Log
+        import android.view.Menu
+        import android.view.MenuItem
         import android.widget.Toast
         import androidx.activity.enableEdgeToEdge
         import androidx.appcompat.app.AppCompatActivity
         import com.qadis.lessonmaker.api.LessonContentResponse
         import com.qadis.lessonmaker.api.RetrofitClient
         import com.qadis.lessonmaker.databinding.ActivityShowNotesBinding
+        import com.qadis.lessonmaker.model.Bookmark
         import com.qadis.lessonmaker.sqlite.DownloadedNote
         import com.qadis.lessonmaker.sqlite.NotesDatabaseHelper
         import retrofit2.Call
@@ -21,6 +25,10 @@
             private var currentContent: String = ""
             private var currentWeekNumber: Int = 0
             private var currentLessonId: Int = -1
+            private var currentSubjectName: String = ""
+            private var currentTeacherName: String = ""
+            private var currentCourseCode: String = ""
+            private lateinit var dbHelper: NotesDatabaseHelper
 
             @SuppressLint("SetJavaScriptEnabled")
             override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +37,14 @@
                 binding = ActivityShowNotesBinding.inflate(layoutInflater)
                 setContentView(binding.root)
 
-                // Get lessonId from intent
+                dbHelper = NotesDatabaseHelper(this)
+
+                // Get data from intent
                 currentLessonId = intent.getIntExtra("lessonId", -1)
+                currentSubjectName = intent.getStringExtra("subjectName") ?: ""
+                currentTeacherName = intent.getStringExtra("teacherName") ?: ""
+                currentCourseCode = intent.getStringExtra("courseCode") ?: ""
+                
                 if (currentLessonId == -1) {
                     Toast.makeText(this, "Invalid lesson ID", Toast.LENGTH_SHORT).show()
                     finish()
@@ -57,12 +71,9 @@
 
                 // Download/save note
                 binding.DownloadButton.setOnClickListener {
-                    val dbHelper = NotesDatabaseHelper(this)
-
-                    val subjectName = intent.getStringExtra("subjectName") ?: "Unknown"
                     val note = DownloadedNote(
                         lessonId = currentLessonId,
-                        subjectName = subjectName,
+                        subjectName = currentSubjectName,
                         weekNumber = currentWeekNumber,
                         htmlContent = currentContent
                     )
@@ -76,8 +87,85 @@
                     }
                 }
 
+                // New buttons for enhanced features
+                binding.bookmarkButton.setOnClickListener {
+                    toggleBookmark()
+                }
 
+                binding.voiceNoteButton.setOnClickListener {
+                    openVoiceNotes()
+                }
 
+                // Update bookmark button state
+                updateBookmarkButton()
+            }
+
+            private fun toggleBookmark() {
+                val isBookmarked = dbHelper.isBookmarked(currentLessonId)
+                
+                if (isBookmarked) {
+                    // Remove bookmark
+                    val success = dbHelper.removeBookmark(currentLessonId)
+                    if (success) {
+                        Toast.makeText(this, "Bookmark removed", Toast.LENGTH_SHORT).show()
+                        updateBookmarkButton()
+                    } else {
+                        Toast.makeText(this, "Failed to remove bookmark", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Add bookmark
+                    val bookmark = Bookmark(
+                        lessonId = currentLessonId,
+                        subjectName = currentSubjectName,
+                        teacherName = currentTeacherName,
+                        weekNumber = currentWeekNumber,
+                        title = "Week $currentWeekNumber - $currentSubjectName",
+                        courseCode = currentCourseCode
+                    )
+                    
+                    val success = dbHelper.insertBookmark(bookmark)
+                    if (success) {
+                        Toast.makeText(this, "Bookmark added", Toast.LENGTH_SHORT).show()
+                        updateBookmarkButton()
+                    } else {
+                        Toast.makeText(this, "Failed to add bookmark", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            private fun updateBookmarkButton() {
+                val isBookmarked = dbHelper.isBookmarked(currentLessonId)
+                binding.bookmarkButton.text = if (isBookmarked) "Remove Bookmark" else "Add Bookmark"
+            }
+
+            private fun openVoiceNotes() {
+                val intent = Intent(this, VoiceNotesActivity::class.java)
+                intent.putExtra("lessonId", currentLessonId)
+                intent.putExtra("subjectName", currentSubjectName)
+                startActivity(intent)
+            }
+
+            override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+                menuInflater.inflate(R.menu.show_notes_menu, menu)
+                return true
+            }
+
+            override fun onOptionsItemSelected(item: MenuItem): Boolean {
+                return when (item.itemId) {
+                    R.id.action_bookmarks -> {
+                        startActivity(Intent(this, BookmarksActivity::class.java))
+                        true
+                    }
+                    R.id.action_voice_notes -> {
+                        openVoiceNotes()
+                        true
+                    }
+                    R.id.action_recovery -> {
+                        startActivity(Intent(this, RecoveryActivity::class.java))
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(item)
+                }
             }
 
             private fun loadLessonContentFromAPI(lessonId: Int) {
