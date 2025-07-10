@@ -14,12 +14,23 @@ class StudentNavBar : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.DownloadedNotesButton.setOnClickListener {
-        val intent = Intent(this@StudentNavBar, DownloadedNotes::class.java)
+            val intent = Intent(this@StudentNavBar, DownloadedNotes::class.java)
             startActivity(intent)
         }
-        binding.Requests.setOnClickListener {
-
+        
+        // Add new navigation buttons
+        binding.BookmarksButton.setOnClickListener {
+            val intent = Intent(this@StudentNavBar, BookmarksActivity::class.java)
+            startActivity(intent)
         }
-
+        
+        binding.RecoveryButton.setOnClickListener {
+            val intent = Intent(this@StudentNavBar, RecoveryActivity::class.java)
+            startActivity(intent)
+        }
+        
+        binding.Requests.setOnClickListener {
+            // Existing functionality
+        }
     }
 }
