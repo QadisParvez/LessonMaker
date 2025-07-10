@@ -36,6 +36,15 @@
         </provider>
 
         <activity
+            android:name=".RecoveryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VoiceNotesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BookmarksActivity"
+            android:exported="false" />
+        <activity
             android:name=".TeacheNav"
             android:exported="false" />
         <activity
